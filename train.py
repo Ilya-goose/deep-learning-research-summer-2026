@@ -17,17 +17,16 @@ if __name__ == "__main__":
     train_set = ASVDataset("LA/ASVspoof2019_LA_train/flac", train_labels, is_train=True)
     eval_set = ASVDataset("LA/ASVspoof2019_LA_eval/flac", eval_labels, is_train=False)
 
-    train_loader = DataLoader(train_set, batch_size=32, shuffle=True, num_workers=0)
-    eval_loader = DataLoader(eval_set, batch_size=32, shuffle=False, num_workers=0)
+    train_loader = DataLoader(train_set, batch_size=64, shuffle=True, num_workers=0)
+    eval_loader = DataLoader(eval_set, batch_size=64, shuffle=False, num_workers=0)
 
     model = LightCNN().to(device)
-    weight = torch.tensor([5.0]).to(device)
-    criterion = nn.BCEWithLogitsLoss(pos_weight=weight)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0003)
+    criterion = nn.BCEWithLogitsLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     best = 100.0
 
-    for epoch in range(15):
+    for epoch in range(3):
         model.train()
         loss_sum = 0.0
         for feats, targets in train_loader:

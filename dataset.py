@@ -21,10 +21,12 @@ class ASVDataset(Dataset):
         self.ids = list(protocol.keys())
         self.is_train = is_train
         self.max_len = max_len
-        self.lfcc = torchaudio.transforms.LFCC(
-            sample_rate=16000,
-            n_lfcc=60,
-            speckwargs={"n_fft": 512, "hop_length": 160}
+        self.stft = torchaudio.transforms.Spectrogram(
+            n_fft=512,
+            hop_length=256,
+            win_length=512,
+            window_fn=torch.hamming_window,
+            power=2
         )
 
     def __len__(self):
@@ -47,6 +49,7 @@ class ASVDataset(Dataset):
             pad = self.max_len - wave.shape[1]
             wave = torch.nn.functional.pad(wave, (0, pad))
 
-        features = self.lfcc(wave)
+        features = self.stft(wave)
+        features = torch.log1p(features)
         target = 1.0 if label == "bonafide" else 0.0
         return features, target

@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     labels = read_protocol("LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt")
     dataset = ASVDataset("LA/ASVspoof2019_LA_eval/flac", labels, is_train=False)
-    loader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=0)
+    loader = DataLoader(dataset, batch_size=64, shuffle=False, num_workers=0)
 
     model = LightCNN().to(device)
     model.load_state_dict(torch.load("best_model.pth", weights_only=True, map_location=device))
